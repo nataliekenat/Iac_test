@@ -1,5 +1,5 @@
 {
-  "settingsInheritedFrom": "nataliekenat/whitesource-config@main"
+  "settingsInheritedFrom": "nataliekenat/whitesource-config@main",
    "scanSettings": {
     "enableIaC": true
   },
