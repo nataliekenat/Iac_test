@@ -1,7 +1,10 @@
 {
   "settingsInheritedFrom": "nataliekenat/whitesource-config@main",
    "scanSettings": {
-    "enableIaC": true
+    "enableIaC": true,
+    "leastVulnerablePackageSettings": {
+      "enabled": true
+                                    }
   },
   "checkRunSettings": {
 "iacCheckRunConclusionLevel": "failure"
