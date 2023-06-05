@@ -1,0 +1,58 @@
+########################################################################################################################
+############################################     wso2-is-as-km docker file   ###########################################
+########################################################################################################################
+
+ARG BASE_IMAGE_REGISTRY
+
+FROM ${BASE_IMAGE_REGISTRY}/wso2/wso2is-km:5.7.0.101-alpine
+USER root
+
+ARG HOME=/home/wso2carbon/wso2is-km-5.7.0
+ARG SOURCE=build
+
+# configuration files used by WSO2 Carbon
+COPY ${SOURCE}/conf/temp/log4j.properties                           ${HOME}/repository/conf/log4j.properties
+
+# Pointing to the MySQL DB
+COPY ${SOURCE}/conf/datasources                                     ${HOME}/repository/conf/datasources
+COPY ${SOURCE}/conf/registry.xml                                    ${HOME}/repository/conf/registry.xml
+COPY ${SOURCE}/conf/user-mgt.xml                                    ${HOME}/repository/conf/user-mgt.xml
+
+COPY ${SOURCE}/conf/carbon.xml                                      ${HOME}/repository/conf/carbon.xml
+COPY ${SOURCE}/conf/metrics.xml                                     ${HOME}/repository/conf/metrics.xml
+COPY ${SOURCE}/conf/tomcat/catalina-server.xml                      ${HOME}/repository/conf/tomcat/catalina-server.xml
+COPY ${SOURCE}/conf/consent-mgt-config.xml                          ${HOME}/repository/conf/consent-mgt-config.xml
+COPY ${SOURCE}/conf/security/identity-log-tokens.properties         ${HOME}/repository/conf/security/identity_log_tokens.properties
+COPY ${SOURCE}/security/client-truststore.jks                       ${HOME}/repository/resources/security/client-truststore.jks
+COPY ${SOURCE}/security/wso2carbon.jks                              ${HOME}/repository/resources/security/wso2carbon.jks
+
+# Authentication flow
+COPY ${SOURCE}/conf/identity/application-authentication.xml         ${HOME}/repository/conf/identity/application-authentication.xml
+COPY ${SOURCE}/conf/identity/captcha-config.properties              ${HOME}/repository/conf/identity/captcha-config.properties
+COPY ${SOURCE}/conf/identity/identity.xml                           ${HOME}/repository/conf/identity/identity.xml
+
+COPY ${SOURCE}/deployment/customAuthData.json                       ${HOME}/repository/deployment/server/eventstreams/org.wso2.is.analytics.stream.CustomAuthData_1.0.0.json
+COPY ${SOURCE}/deployment/overallAuthentication.json                ${HOME}/repository/deployment/server/eventstreams/org.wso2.is.analytics.stream.OverallAuthentication_1.1.0.json
+COPY ${SOURCE}/deployment/eventpublishers                           ${HOME}/repository/deployment/server/eventpublishers
+
+# account recovery endpoint
+ARG WEBAPPS=${HOME}/repository/deployment/server/webapps
+RUN unzip ${WEBAPPS}/accountrecoveryendpoint.war -d /tmp/war-build
+COPY ${SOURCE}/deployment/saml-translator.jsp /tmp/war-build/
+RUN cd /tmp/war-build/ && jar -cvf accountrecoveryendpoint.war *
+RUN mv /tmp/war-build/accountrecoveryendpoint.war ${WEBAPPS}
+RUN rm -rf ${WEBAPPS}/accountrecoveryendpoint
+RUN unzip ${WEBAPPS}/accountrecoveryendpoint.war -d ${WEBAPPS}/accountrecoveryendpoint
+
+# Our JARs
+COPY common/dropins/        ${HOME}/repository/components/dropins/
+COPY common/lib/            ${HOME}/repository/components/lib/
+#COPY common/patches/        ${HOME}/repository/components/patches/patch9999/
+
+# tenants
+COPY ${SOURCE}/tenants/     ${HOME}/repository/tenants/
+
+# Debugging sameSite cookie attribute
+RUN apk add --update curl && rm -rf /var/cache/apk/*
+
+LABEL maintainer="UIAM@vonage.com"
