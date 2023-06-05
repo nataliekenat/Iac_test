@@ -1,3 +1,7 @@
+########################################################################################################################
+############################################     wso2-is-as-km docker file   ###########################################
+########################################################################################################################
+
 ARG BASE_IMAGE_REGISTRY
 
 FROM ${BASE_IMAGE_REGISTRY}/wso2/wso2is-km:5.7.0.101-alpine
@@ -50,3 +54,5 @@ COPY ${SOURCE}/tenants/     ${HOME}/repository/tenants/
 
 # Debugging sameSite cookie attribute
 RUN apk add --update curl && rm -rf /var/cache/apk/*
+
+LABEL maintainer="UIAM@vonage.com"
