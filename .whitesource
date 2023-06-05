@@ -1,10 +1,22 @@
 {
   "scanSettings": {
-    "enableIaC": true,
-    "baseBranches": ["master","integration"]
+    "configddMode": "AUTO",
+    "configExternalURL": "",
+    "baseBranches": [],
+    "enableLicenseViolations":true,
+    "enableIaC": true
+  },
+  "scanSettingsSAST" : {
+    "enableScan": false
   },
   "checkRunSettings": {
-    "useMendCheckNames": true,
-    "iacCheckRunConclusionLevel": "failure"
+    "vulnerableCheckRunConclusionLevel": "failure",
+    "licenseCheckRunConclusionLevel": "failure",
+    "displayMode": "diff",
+    "useMendCheckNames": "true"
+  },
+  "issueSettings": {
+    "minSeverityLevel": "LOW",
+    "issueType":"DEPENDENCY"
   }
 }
