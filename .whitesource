@@ -1,23 +1,9 @@
 {
-  "scanSettings": {
-    "configddMode": "AUTO",
-    "configExternalURL": "",
-    "baseBranches": [],
-    "enableLicenseViolations":true,
+  "settingsInheritedFrom": "nataliekenat/whitesource-config@main"
+   "scanSettings": {
     "enableIaC": true
   },
-  "scanSettingsSAST" : {
-    "enableScan": false
-  },
   "checkRunSettings": {
-    "vulnerableCheckRunConclusionLevel": "failure",
-    "licenseCheckRunConclusionLevel": "failure",
-    "displayMode": "diff",
-    "useMendCheckNames": "true"
-  },
-  "issueSettings": {
-    "minSeverityLevel": "LOW",
-    "issueType":"DEPENDENCY"
-  }
+"iacCheckRunConclusionLevel": "failure"
 }
-
+}
